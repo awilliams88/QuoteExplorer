@@ -7,8 +7,6 @@ class QuoteListViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
 
-    private var cancellables = Set<AnyCancellable>()
-
     func loadQuotes() {
         isLoading = true
         errorMessage = nil
@@ -23,4 +21,10 @@ class QuoteListViewModel: ObservableObject {
             isLoading = false
         }
     }
+
+    func toggleFavorite(for quote: Quote) {
+        guard let index = quotes.firstIndex(of: quote) else { return }
+        quotes[index].isFavorite.toggle()
+    }
 }
+

@@ -14,16 +14,30 @@ struct QuoteListView: View {
                         .foregroundColor(.red)
                         .padding()
                 } else {
-                    List(viewModel.quotes) { quote in
-                        NavigationLink(destination: QuoteDetailView(quote: quote)) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("“\(quote.text)”")
-                                    .font(.body)
-                                Text("- \(quote.author)")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
+                    List {
+                        ForEach(viewModel.quotes) { quote in
+                            HStack {
+                                NavigationLink(destination: QuoteDetailView(quote: quote)) {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("“\(quote.text)”")
+                                            .font(.body)
+                                        Text("- \(quote.author)")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    .padding(.vertical, 4)
+                                }
+
+                                Spacer()
+
+                                Button(action: {
+                                    viewModel.toggleFavorite(for: quote)
+                                }) {
+                                    Image(systemName: quote.isFavorite ? "heart.fill" : "heart")
+                                        .foregroundColor(quote.isFavorite ? .red : .gray)
+                                }
+                                .buttonStyle(BorderlessButtonStyle())
                             }
-                            .padding(.vertical, 8)
                         }
                     }
                     .listStyle(.plain)
@@ -44,3 +58,4 @@ struct QuoteListView: View {
         }
     }
 }
+
