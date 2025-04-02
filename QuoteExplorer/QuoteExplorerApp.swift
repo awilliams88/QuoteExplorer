@@ -1,11 +1,5 @@
-//
-//  QuoteExplorerApp.swift
-//  QuoteExplorer
-//
-//  Created by Arpit Williams on 01/04/25.
-//
-
 import SwiftUI
+import SwiftData
 
 @main
 struct QuoteExplorerApp: App {
@@ -13,5 +7,6 @@ struct QuoteExplorerApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: QuoteEntity.self)
     }
 }

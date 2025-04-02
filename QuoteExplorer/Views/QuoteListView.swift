@@ -1,18 +1,22 @@
 import SwiftUI
+import SwiftData
 
 struct QuoteListView: View {
-    @StateObject private var viewModel = QuoteListViewModel()
+    @Environment(\.modelContext) private var context
+    @StateObject private var viewModel: QuoteListViewModel
+
+    init() {
+        _viewModel = StateObject(wrappedValue: QuoteListViewModel(context: ModelContext(try! ModelContainer(for: QuoteEntity.self))))
+    }
 
     var body: some View {
         NavigationView {
             VStack {
                 if viewModel.isLoading {
                     ProgressView("Loading Quotes...")
-                        .padding()
                 } else if let error = viewModel.errorMessage {
                     Text(error)
                         .foregroundColor(.red)
-                        .padding()
                 } else {
                     List {
                         ForEach(viewModel.quotes) { quote in
@@ -25,7 +29,6 @@ struct QuoteListView: View {
                                             .font(.caption)
                                             .foregroundColor(.secondary)
                                     }
-                                    .padding(.vertical, 4)
                                 }
 
                                 Spacer()
@@ -36,11 +39,10 @@ struct QuoteListView: View {
                                     Image(systemName: quote.isFavorite ? "heart.fill" : "heart")
                                         .foregroundColor(quote.isFavorite ? .red : .gray)
                                 }
-                                .buttonStyle(BorderlessButtonStyle())
+                                .buttonStyle(.plain)
                             }
                         }
                     }
-                    .listStyle(.plain)
                 }
 
                 Button("Refresh Quotes") {
@@ -58,4 +60,3 @@ struct QuoteListView: View {
         }
     }
 }
-
