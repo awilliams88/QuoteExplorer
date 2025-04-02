@@ -4,6 +4,7 @@ import SwiftData
 struct QuoteListView: View {
     @Environment(\.modelContext) private var context
     @StateObject private var viewModel: QuoteListViewModel
+    @State private var searchText: String = ""
 
     init() {
         _viewModel = StateObject(wrappedValue: QuoteListViewModel(context: ModelContext(try! ModelContainer(for: QuoteEntity.self))))
@@ -20,7 +21,7 @@ struct QuoteListView: View {
                 } else {
                     List {
                         Section {
-                            ForEach(viewModel.quotes) { quote in
+                            ForEach(filteredQuotes) { quote in
                                 HStack {
                                     NavigationLink(destination: QuoteDetailView(quote: quote)) {
                                         VStack(alignment: .leading, spacing: 4) {
@@ -63,9 +64,21 @@ struct QuoteListView: View {
                 .cornerRadius(10)
             }
             .navigationTitle("Quote Explorer")
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
         }
         .onAppear {
             viewModel.loadQuotes()
+        }
+    }
+
+    private var filteredQuotes: [Quote] {
+        if searchText.isEmpty {
+            return viewModel.quotes
+        } else {
+            return viewModel.quotes.filter {
+                $0.text.localizedCaseInsensitiveContains(searchText) ||
+                $0.author.localizedCaseInsensitiveContains(searchText)
+            }
         }
     }
 }
