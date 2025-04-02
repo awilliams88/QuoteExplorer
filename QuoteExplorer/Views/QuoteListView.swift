@@ -19,30 +19,39 @@ struct QuoteListView: View {
                         .foregroundColor(.red)
                 } else {
                     List {
-                        ForEach(viewModel.quotes) { quote in
-                            HStack {
-                                NavigationLink(destination: QuoteDetailView(quote: quote)) {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("“\(quote.text)”")
-                                            .font(.body)
-                                        Text("- \(quote.author)")
-                                            .font(.caption)
-                                            .foregroundColor(.secondary)
+                        Section {
+                            ForEach(viewModel.quotes) { quote in
+                                HStack {
+                                    NavigationLink(destination: QuoteDetailView(quote: quote)) {
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text("“\(quote.text)”")
+                                                .font(.body)
+                                            Text("- \(quote.author)")
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
+                                        }
                                     }
-                                }
 
-                                Spacer()
+                                    Spacer()
 
-                                Button(action: {
-                                    viewModel.toggleFavorite(for: quote)
-                                }) {
-                                    Image(systemName: quote.isFavorite ? "heart.fill" : "heart")
-                                        .foregroundColor(quote.isFavorite ? .red : .gray)
+                                    Button(action: {
+                                        viewModel.toggleFavorite(for: quote)
+                                    }) {
+                                        Image(systemName: quote.isFavorite ? "heart.fill" : "heart")
+                                            .foregroundColor(quote.isFavorite ? .red : .gray)
+                                    }
+                                    .buttonStyle(.plain)
                                 }
-                                .buttonStyle(.plain)
+                            }
+                        }
+
+                        Section {
+                            NavigationLink("Favorites") {
+                                FavoriteQuotesView()
                             }
                         }
                     }
+                    .listStyle(.insetGrouped)
                 }
 
                 Button("Refresh Quotes") {
